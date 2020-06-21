@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<style>
+    pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+    .string { color: green; }
+    .number { color: darkorange; }
+    .boolean { color: blue; }
+    .null { color: magenta; }
+    .key { color: red; }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>JSON格式化</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function(){
+
+            var result = {
+                "code" : 200,
+                "message" : "这只是测试信息",
+                "data" :[
+                    {
+                        "urlName" : "测试名1",
+                        "url" : "测试链接：192.168.1.2",
+                    },
+                    {
+                        "urlName" : "测试名2",
+                        "url" : "测试链接：192.168.1.3",
+                    },
+                    {
+                        "urlName" : "测试名3",
+                        "url" : "测试链接：192.168.1.3",
+                    },
+                ]
+            };
+
+            /*var result = {
+                "status": 1,
+                "data": {
+                    "total": 3,
+                    "page": 1,
+                    "limit": 10,
+                    "list": [
+                        {
+                            "title": '测试1',
+                            "title1": '测试2',
+                            "title3": '中文',
+                            "title4": '简体'
+ 
+                        }
+                    ]
+                },
+                "message": "success",
+                "$dateTime": "2019-05-17 06:35:24",
+                "$timestamp": 1558074924
+            };*/
+            $('#result').html(syntaxHighlight(result));
+        });
+ 
+        function syntaxHighlight(json) {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+    </script>
+</head>
+<body>
+<pre id="result">
+</pre>
+</body>
+</html>
