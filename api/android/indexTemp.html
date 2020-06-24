@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<style>
+    pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+    .string { color: green; }
+    .number { color: darkorange; }
+    .boolean { color: blue; }
+    .null { color: magenta; }
+    .key { color: red; }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>主url输出</title>
+    <link rel="icon" href="../../res/images/AI.svg" type="image/x-icon">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+
+        //获取页面url参数以判断是否合法
+        var url = window.location.href;
+
+        var querys = url.substring(url.indexOf('?') + 1).split('&');
+        var result=[];
+        for(var i=0;i<querys.length;i++){
+            var temp=querys[i].split('=');
+            if(temp.length<2){
+                result[temp[0]]='';
+            }else{
+                result[temp[0]]=temp[1];
+            }
+        }
+        var accessId=result['accessId'];
+        if (accessId!=="android"){
+            alert('你没有权限查看此内容！是不是走错了地方？');window.location.href='../../index.html';
+        }
+
+    </script>
+
+    <script>
+
+        function Click(){
+
+            alert('不准偷看呦！');
+
+            window.event.returnValue=false;
+
+        }
+
+        document.oncontextmenu=Click;
+
+    </Script>
+
+    <script>
+        $(document).ready(function(){
+
+            var result = {
+                "code" : 200,
+                "message" : "主（Main）Url",
+                "data" : {
+                    "searchHint": {
+                        "urlTitle": "搜索提示",
+                        "url": "http://192.168.1.5/API/SearchHint.php",
+                    },
+                    "searchResult": {
+                        "urlTitle": "搜索结果",
+                        "url": "http://192.168.1.5/API/SearchResult.php",
+                    },
+                    "searchRecommend": {
+                        "urlTitle": "搜索推荐",
+                        "url": "http://192.168.1.5/API/SearchRecommend.php",
+                    },
+
+                }
+            };
+
+            /*var result = {
+                "status": 1,
+                "data": {
+                    "total": 3,
+                    "page": 1,
+                    "limit": 10,
+                    "list": [
+                        {
+                            "title": '测试1',
+                            "title1": '测试2',
+                            "title3": '中文',
+                            "title4": '简体'
+
+                        }
+                    ]
+                },
+                "message": "success",
+                "$dateTime": "2019-05-17 06:35:24",
+                "$timestamp": 1558074924
+            };*/
+            $('#result').html(syntaxHighlight(result));
+        });
+
+        function syntaxHighlight(json) {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+    </script>
+</head>
+<body>
+<pre id="result">
+</pre>
+</body>
+</html>
